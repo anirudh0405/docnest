@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment - Healthcare Management App</title>
+    <link rel="stylesheet" href="appointment.css"> 
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+ 
+<body>
+
+    <div class="container">
+        <h1>Book Appointment</h1>
+        <div class="form-wrapper">
+            
+            <div class="box personal-info-box">
+                <h2>Personal Information</h2>
+                <form id="personalInfoForm">
+                    <input type="text" id="patientName" placeholder="Patient Name" required>
+                    <input type="email" id="patientEmail" placeholder="Email" required>
+                    <input type="tel" id="patientPhone" placeholder="Phone Number" required>
+                    <input type="text" id="patientAddress" placeholder="Address" required>
+                </form>
+            </div>
+
+            
+            <div class="box appointment-details-box">
+                <h2>Appointment Details</h2>
+                <form id="appointmentForm">
+                    <label for="doctorCategory">Choose Doctor Category:</label>
+                    <select id="doctorCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="general">General Physician</option>
+                        <option value="dermatologist">Dermatologist</option>
+                        <option value="dentist">Dentist</option>
+                        <option value="cardiologist">Cardiologist</option>
+                        <option value="neurologist">Neurologist</option>
+                        <option value="orthopedic">Orthopedic</option>
+                    </select>
+
+                    <label for="doctor">Choose Doctor:</label>
+                    <select id="doctor" required>
+                        <option value="">Select Doctor</option>
+                    </select>
+
+                    <input type="date" id="appointmentDate" required>
+                    <input type="time" id="appointmentTime" required>
+                </form>
+            </div>
+        </div>
+
+        
+        <button type="submit" form="appointmentForm" class="submit-button">Submit</button>
+    </div>
+    <script src="appointment.js"></script> 
+</body>
+</html>
