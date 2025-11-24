@@ -3,7 +3,8 @@
 > A lightweight front-end implementation of **DocNest** — a patient-facing appointment booking and scheduling platform with a live map feature (Google Maps).  
 > **Tech stack:** HTML, CSS, JavaScript, Google Maps JavaScript API
 
-![photo_2024-06-25_23-49-32](https://github.com/user-attachments/assets/cd7c24e2-b376-4394-8cfb-c5560b2eb789)
+<img width="1806" height="936" alt="Screenshot 2025-11-24 174539" src="https://github.com/user-attachments/assets/6ab1a1ca-861a-4415-aee1-0efdc9fb0614" />
+
 
 ---
 
