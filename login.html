@@ -312,15 +312,16 @@
       <h1 class="form-title">Welcome!</h1>
       <p class="form-subtitle">Login to your account</p>
       <div class="form-body">
-        <div class="fields">
+        <form id="login-form" class="fields" onsubmit="return false;">
           <div class="input-wrap">
-            <input type="email" placeholder="Email" autocomplete="email"/>
+            <input id="username" type="text" placeholder="Email" autocomplete="email"/>
           </div>
           <div class="input-wrap">
-            <input type="password" placeholder="Password" autocomplete="current-password"/>
+            <input id="password" type="password" placeholder="Password" autocomplete="current-password"/>
           </div>
-          <button class="btn-login">Login</button>
-        </div>
+          <div id="message" style="color:#ff7e7e; font-size:0.8rem; text-align:center; min-height:18px;"></div>
+          <button class="btn-login" type="submit">Login</button>
+        </form>
         <div class="divider">
           <div class="divider-line"></div>
           <span class="divider-label">Login<br>with</span>
@@ -347,5 +348,6 @@
       </p>
     </div>
   </div>
+  <script src="login.js"></script>
 </body>
 </html>
