@@ -8,354 +8,346 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --teal-accent: #5ecfcf;
-      --green-accent: #7ec86e;
-      --text-muted: #9ecece;
-      --white: #ffffff;
+      --teal: #5ecfcf;
+      --green: #7ec86e;
+      --red: #ff6b6b;
+      --orange: #ffaa5e;
+      --muted: #9ecece;
+      --white: #fff;
     }
 
     body {
       min-height: 100vh;
       background: radial-gradient(ellipse at top left, #0a3a4a 0%, #0d4a4a 30%, #061e28 70%, #04141c 100%);
       font-family: 'DM Sans', sans-serif;
-      padding: 30px 20px 50px;
+      padding: 28px 20px 60px;
+      overflow-x: hidden;
     }
 
     body::before {
-      content: '';
-      position: fixed;
-      top: -200px; left: -200px;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(94,207,207,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
+      content:''; position:fixed; top:-200px; left:-200px;
+      width:600px; height:600px;
+      background:radial-gradient(circle,rgba(94,207,207,.08) 0%,transparent 70%);
+      border-radius:50%; pointer-events:none;
     }
     body::after {
-      content: '';
-      position: fixed;
-      bottom: -150px; right: -150px;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(126,200,110,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
+      content:''; position:fixed; bottom:-150px; right:-150px;
+      width:500px; height:500px;
+      background:radial-gradient(circle,rgba(126,200,110,.07) 0%,transparent 70%);
+      border-radius:50%; pointer-events:none;
+    }
+
+    @keyframes fadeUp {
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes fadeIn {
+      from{opacity:0} to{opacity:1}
     }
 
     /* ── NAV ── */
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1000px;
-      margin: 0 auto 36px;
-      animation: fadeUp 0.5s both;
+      display:flex; align-items:center; justify-content:space-between;
+      max-width:1080px; margin:0 auto 28px;
+      animation:fadeUp .5s both;
     }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .nav-logo img {
-      height: 48px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
-    }
-
-    .nav-logo span {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      color: var(--white);
-      letter-spacing: 0.01em;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 8px;
-    }
-
+    .nav-logo img { height:48px; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
+    .nav-links { display:flex; gap:8px; }
     .nav-link {
-      padding: 8px 18px;
-      border-radius: 50px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      transition: all 0.2s;
+      padding:8px 18px; border-radius:50px; font-size:.82rem; font-weight:500;
+      color:var(--muted); text-decoration:none;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04);
+      transition:all .2s;
+    }
+    .nav-link:hover,.nav-link.active {
+      color:var(--white); background:rgba(94,207,207,.1); border-color:rgba(94,207,207,.3);
     }
 
-    .nav-link:hover, .nav-link.active {
-      color: var(--white);
-      background: rgba(94,207,207,0.1);
-      border-color: rgba(94,207,207,0.3);
+    /* ── VITALS STRIP ── */
+    .vitals-strip {
+      display:flex; gap:14px; max-width:1080px; margin:0 auto 24px;
+      animation:fadeUp .5s .05s both;
+      overflow-x:auto; padding-bottom:4px;
+    }
+    .vitals-strip::-webkit-scrollbar { display:none; }
+
+    .vital-card {
+      flex:0 0 auto;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      padding:14px 20px;
+      display:flex; align-items:center; gap:14px;
+      min-width:170px;
+      backdrop-filter:blur(16px);
+      position:relative; overflow:hidden;
+    }
+    .vital-card::before {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+      border-radius:0 0 18px 18px;
+    }
+    .vital-card.heart::before  { background:linear-gradient(90deg,transparent,var(--red),transparent); }
+    .vital-card.oxygen::before { background:linear-gradient(90deg,transparent,var(--teal),transparent); }
+    .vital-card.bp::before     { background:linear-gradient(90deg,transparent,var(--orange),transparent); }
+    .vital-card.temp::before   { background:linear-gradient(90deg,transparent,var(--green),transparent); }
+    .vital-card.steps::before  { background:linear-gradient(90deg,transparent,#a78bfa,transparent); }
+
+    .vital-icon {
+      width:40px; height:40px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+    }
+    .vital-icon.heart  { background:rgba(255,107,107,.15); }
+    .vital-icon.oxygen { background:rgba(94,207,207,.15); }
+    .vital-icon.bp     { background:rgba(255,170,94,.15); }
+    .vital-icon.temp   { background:rgba(126,200,110,.15); }
+    .vital-icon.steps  { background:rgba(167,139,250,.15); }
+    .vital-icon svg { width:20px; height:20px; }
+
+    .vital-data { flex:1; }
+    .vital-label { font-size:.68rem; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+    .vital-value { font-size:1.15rem; font-weight:700; color:var(--white); line-height:1.2; }
+    .vital-unit  { font-size:.68rem; font-weight:400; color:var(--muted); }
+    .vital-trend { font-size:.68rem; margin-top:1px; }
+    .vital-trend.up   { color:var(--green); }
+    .vital-trend.norm { color:var(--teal); }
+    .vital-trend.warn { color:var(--orange); }
+
+    /* animated pulse bars inside heart card */
+    .mini-bars {
+      display:flex; align-items:flex-end; gap:2px; height:22px;
+    }
+    .mini-bars span {
+      display:block; width:3px; border-radius:2px; background:var(--red);
+      animation:barPulse 1s ease-in-out infinite alternate;
+    }
+    .mini-bars span:nth-child(1){height:35%;animation-delay:0s}
+    .mini-bars span:nth-child(2){height:80%;animation-delay:.1s}
+    .mini-bars span:nth-child(3){height:55%;animation-delay:.2s}
+    .mini-bars span:nth-child(4){height:100%;animation-delay:.3s}
+    .mini-bars span:nth-child(5){height:60%;animation-delay:.4s}
+    .mini-bars span:nth-child(6){height:40%;animation-delay:.5s}
+    @keyframes barPulse {
+      from{opacity:.4;transform:scaleY(.6)} to{opacity:1;transform:scaleY(1)}
     }
 
-    /* ── PAGE HEADER ── */
-    .page-header {
-      text-align: center;
-      margin-bottom: 36px;
-      animation: fadeUp 0.5s 0.1s both;
+    /* ── ECG BANNER ── */
+    .ecg-banner {
+      max-width:1080px; margin:0 auto 24px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px; padding:14px 24px;
+      display:flex; align-items:center; gap:16px;
+      overflow:hidden; position:relative;
+      animation:fadeUp .5s .1s both;
     }
-
-    .page-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      color: var(--white);
-      margin-bottom: 8px;
+    .ecg-label {
+      font-size:.7rem; color:var(--teal); font-weight:600;
+      letter-spacing:.08em; text-transform:uppercase;
+      white-space:nowrap; flex-shrink:0;
     }
-
-    .page-header p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
+    .ecg-wrap { flex:1; overflow:hidden; height:40px; position:relative; }
+    svg.ecg-line {
+      width:200%; height:40px; position:absolute; left:0; top:0;
+      animation:scrollEcg 3s linear infinite;
     }
+    @keyframes scrollEcg {
+      from{transform:translateX(0)} to{transform:translateX(-50%)}
+    }
+    .ecg-status {
+      display:flex; align-items:center; gap:6px; flex-shrink:0;
+      font-size:.75rem; color:var(--green);
+    }
+    .ecg-dot {
+      width:7px; height:7px; border-radius:50%; background:var(--green);
+      animation:blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-    /* ── MAIN LAYOUT ── */
+    /* ── SPECIALITY PILLS ── */
+    .spec-row {
+      display:flex; gap:10px; max-width:1080px; margin:0 auto 24px;
+      flex-wrap:wrap; animation:fadeUp .5s .15s both;
+    }
+    .spec-pill {
+      display:flex; align-items:center; gap:8px;
+      padding:8px 16px; border-radius:50px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+      font-size:.8rem; color:var(--muted);
+      cursor:pointer; transition:all .2s; user-select:none;
+    }
+    .spec-pill:hover, .spec-pill.active {
+      color:var(--white); background:rgba(94,207,207,.12);
+      border-color:rgba(94,207,207,.35);
+    }
+    .spec-pill span { font-size:1rem; }
+
+    /* ── MAIN ── */
     .main {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
-      max-width: 1000px;
-      margin: 0 auto;
+      display:grid; grid-template-columns:1fr 340px;
+      gap:24px; max-width:1080px; margin:0 auto;
     }
 
     /* ── GLASS CARD ── */
     .glass-card {
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-      padding: 32px;
-      animation: fadeUp 0.6s 0.15s both;
+      background:rgba(255,255,255,.06);
+      backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+      border-radius:24px; border:1px solid rgba(255,255,255,.1);
+      box-shadow:0 24px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1);
+      padding:30px; animation:fadeUp .6s .2s both;
     }
-
     .glass-card.side {
-      animation-delay: 0.25s;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      animation-delay:.28s; display:flex; flex-direction:column; gap:16px;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── FORM ── */
+    /* ── FORM STYLES ── */
     .section-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      color: var(--teal-accent);
-      text-transform: uppercase;
-      margin-bottom: 16px;
+      font-size:.68rem; font-weight:600; letter-spacing:.1em;
+      color:var(--teal); text-transform:uppercase; margin-bottom:14px;
     }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+    .input-group { display:flex; flex-direction:column; gap:6px; }
+    .input-group label { font-size:.75rem; color:var(--muted); font-weight:500; padding-left:4px; }
+    .input-group input, .input-group select {
+      width:100%; padding:12px 16px;
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
+      border-radius:14px; color:var(--white); font-size:.875rem;
+      font-family:'DM Sans',sans-serif; outline:none;
+      transition:border-color .25s,background .25s,box-shadow .25s;
+      appearance:none; -webkit-appearance:none;
     }
-
-    .form-grid.full { grid-template-columns: 1fr; }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    .input-group input::placeholder { color:rgba(255,255,255,.3); }
+    .input-group select option { background:#0d3d3d; color:white; }
+    .input-group input:focus, .input-group select:focus {
+      border-color:rgba(94,207,207,.5); background:rgba(94,207,207,.06);
+      box-shadow:0 0 0 3px rgba(94,207,207,.1);
     }
-
-    .input-group label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      padding-left: 4px;
-    }
-
-    .input-group input,
-    .input-group select {
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px;
-      color: var(--white);
-      font-size: 0.875rem;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    .input-group input::placeholder { color: rgba(255,255,255,0.3); }
-    .input-group select option { background: #0d3d3d; color: white; }
-
-    .input-group input:focus,
-    .input-group select:focus {
-      border-color: rgba(94,207,207,0.5);
-      background: rgba(94,207,207,0.06);
-      box-shadow: 0 0 0 3px rgba(94,207,207,0.1);
-    }
-
-    /* Select arrow */
-    .select-wrap { position: relative; }
+    .select-wrap { position:relative; }
     .select-wrap::after {
-      content: '▾';
-      position: absolute;
-      right: 14px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      pointer-events: none;
-      font-size: 12px;
+      content:'▾'; position:absolute; right:14px; top:50%;
+      transform:translateY(-50%); color:var(--muted); pointer-events:none; font-size:12px;
     }
-
     .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-      margin: 8px 0 20px;
+      height:1px; margin:4px 0 20px;
+      background:linear-gradient(to right,transparent,rgba(255,255,255,.1),transparent);
     }
-
     .btn-book {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #0d3d3d, #1a5f5f);
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      border: 1px solid rgba(94,207,207,0.2);
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.25s;
-      margin-top: 8px;
-      position: relative;
-      overflow: hidden;
+      width:100%; padding:15px;
+      background:linear-gradient(135deg,#0d3d3d,#1a5f5f);
+      color:var(--white); font-family:'DM Sans',sans-serif;
+      font-size:.95rem; font-weight:600; letter-spacing:.03em;
+      border:1px solid rgba(94,207,207,.2); border-radius:14px;
+      cursor:pointer; transition:all .25s; margin-top:8px; position:relative; overflow:hidden;
     }
-
     .btn-book::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(94,207,207,0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.25s;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(94,207,207,.12),transparent);
+      opacity:0; transition:opacity .25s;
     }
-
-    .btn-book:hover::before { opacity: 1; }
-    .btn-book:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(94,207,207,0.1);
-    }
-    .btn-book:active { transform: translateY(0); }
+    .btn-book:hover::before { opacity:1; }
+    .btn-book:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.3),0 0 20px rgba(94,207,207,.1); }
+    .btn-book:active { transform:translateY(0); }
 
     /* ── SIDE PANEL ── */
-    .side-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
-      color: var(--white);
-      margin-bottom: 4px;
-    }
+    .side-title { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--white); }
+    .side-sub   { font-size:.75rem; color:var(--muted); margin-top:2px; }
 
-    .side-sub {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    /* Doctor preview card */
     .doctor-preview {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-height: 72px;
-      transition: all 0.3s;
+      background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; padding:14px;
+      display:flex; align-items:center; gap:12px; min-height:70px;
+      transition:all .3s;
     }
-
-    .doctor-preview.active {
-      border-color: rgba(94,207,207,0.25);
-      background: rgba(94,207,207,0.05);
-    }
-
+    .doctor-preview.active { border-color:rgba(94,207,207,.25); background:rgba(94,207,207,.05); }
     .doc-avatar {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #3aafaf, #1a7070);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      width:44px; height:44px; border-radius:12px;
+      background:linear-gradient(135deg,#3aafaf,#1a7070);
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .doc-avatar svg { width:22px; height:22px; stroke:white; fill:none; stroke-width:1.8; }
+    .doc-name { font-size:.85rem; font-weight:600; color:var(--white); }
+    .doc-venue { font-size:.75rem; color:var(--muted); margin-top:2px; }
+    .doc-placeholder { font-size:.8rem; color:rgba(255,255,255,.25); font-style:italic; }
+
+    /* ── HEALTH SCORE RING ── */
+    .health-ring-wrap {
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+      border-radius:18px; padding:18px 16px; text-align:center;
+    }
+    .ring-title { font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+    .ring-svg { width:90px; height:90px; margin:0 auto 10px; display:block; }
+    .ring-val { font-size:1.5rem; font-weight:700; color:var(--white); }
+    .ring-label { font-size:.72rem; color:var(--green); margin-top:2px; }
+
+    /* ── MINI STATS ── */
+    .mini-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .mini-stat {
+      background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding:12px 10px; text-align:center;
+    }
+    .ms-icon { font-size:1.2rem; margin-bottom:5px; }
+    .ms-val  { font-size:.95rem; font-weight:700; color:var(--white); }
+    .ms-label{ font-size:.68rem; color:var(--muted); margin-top:1px; }
+
+    /* ── HEALTH TIPS TICKER ── */
+    .tips-ticker {
+      background:rgba(126,200,110,.06); border:1px solid rgba(126,200,110,.14);
+      border-radius:14px; padding:12px 14px; overflow:hidden;
+    }
+    .ticker-label { font-size:.65rem; color:var(--green); font-weight:600; letter-spacing:.08em; text-transform:uppercase; margin-bottom:6px; }
+    .ticker-track { overflow:hidden; }
+    .ticker-text  { font-size:.78rem; color:var(--muted); line-height:1.5; animation:tickerFade 5s ease-in-out infinite; }
+    @keyframes tickerFade {
+      0%,100%{opacity:0;transform:translateY(6px)}
+      10%,85%{opacity:1;transform:translateY(0)}
     }
 
-    .doc-avatar svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 1.8; }
-
-    .doc-info { flex: 1; }
-    .doc-name { font-size: 0.85rem; font-weight: 600; color: var(--white); }
-    .doc-venue { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-    .doc-placeholder { font-size: 0.8rem; color: rgba(255,255,255,0.25); font-style: italic; }
-
-    /* Info tiles */
-    .info-tiles {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    /* ── CHECKLIST ── */
+    .checklist { display:flex; flex-direction:column; gap:8px; }
+    .check-item {
+      display:flex; align-items:center; gap:10px;
+      font-size:.8rem; color:var(--muted);
+    }
+    .check-icon {
+      width:22px; height:22px; border-radius:50%;
+      background:rgba(94,207,207,.12); border:1px solid rgba(94,207,207,.25);
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; font-size:.7rem;
     }
 
-    .info-tile {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 14px 12px;
-      text-align: center;
+    /* ── HEALTH TIPS BELOW FORM ── */
+    .tips-row {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:14px; max-width:1080px; margin:24px auto 0;
+      animation:fadeUp .6s .35s both;
     }
-
-    .tile-icon {
-      font-size: 1.3rem;
-      margin-bottom: 6px;
+    .tip-card {
+      background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+      border-radius:18px; padding:20px 18px;
+      display:flex; flex-direction:column; gap:10px;
+      transition:all .25s;
     }
-
-    .tile-val {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--white);
+    .tip-card:hover {
+      background:rgba(255,255,255,.08); border-color:rgba(94,207,207,.2);
+      transform:translateY(-3px);
     }
-
-    .tile-label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .tip-card-icon {
+      width:40px; height:40px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center; font-size:1.2rem;
     }
+    .tip-card-title { font-size:.85rem; font-weight:600; color:var(--white); }
+    .tip-card-text  { font-size:.78rem; color:var(--muted); line-height:1.6; }
 
-    /* Tips */
-    .tip {
-      background: rgba(126,200,110,0.06);
-      border: 1px solid rgba(126,200,110,0.15);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-    .tip-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
-    .tip-text strong { color: var(--green-accent); display: block; margin-bottom: 2px; }
-
-    /* Responsive */
-    @media (max-width: 720px) {
-      .main { grid-template-columns: 1fr; }
-      .glass-card.side { order: -1; }
-      .form-grid { grid-template-columns: 1fr; }
-      nav { flex-direction: column; gap: 14px; }
+    /* responsive */
+    @media(max-width:760px){
+      .main{grid-template-columns:1fr}
+      .glass-card.side{order:-1}
+      .form-grid{grid-template-columns:1fr}
+      .tips-row{grid-template-columns:1fr}
+      nav{flex-direction:column;gap:14px}
+      .vitals-strip{gap:10px}
     }
   </style>
 </head>
@@ -373,21 +365,121 @@
     </div>
   </nav>
 
-  <!-- HEADER -->
-  <div class="page-header">
-    <h1>Book an Appointment</h1>
-    <p>Choose your doctor and pick a time that works for you</p>
+  <!-- VITALS STRIP -->
+  <div class="vitals-strip">
+
+    <div class="vital-card heart">
+      <div class="vital-icon heart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="1.8">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <div class="vital-data">
+        <div class="vital-label">Heart Rate</div>
+        <div class="vital-value">72 <span class="vital-unit">bpm</span></div>
+        <div class="vital-trend norm">● Normal</div>
+      </div>
+      <div class="mini-bars">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div class="vital-card oxygen">
+      <div class="vital-icon oxygen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5ecfcf" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+      </div>
+      <div class="vital-data">
+        <div class="vital-label">SpO₂</div>
+        <div class="vital-value">98 <span class="vital-unit">%</span></div>
+        <div class="vital-trend up">↑ Excellent</div>
+      </div>
+    </div>
+
+    <div class="vital-card bp">
+      <div class="vital-icon bp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffaa5e" stroke-width="1.8">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <div class="vital-data">
+        <div class="vital-label">Blood Pressure</div>
+        <div class="vital-value">120<span class="vital-unit">/80</span></div>
+        <div class="vital-trend norm">● Optimal</div>
+      </div>
+    </div>
+
+    <div class="vital-card temp">
+      <div class="vital-icon temp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7ec86e" stroke-width="1.8">
+          <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+        </svg>
+      </div>
+      <div class="vital-data">
+        <div class="vital-label">Temperature</div>
+        <div class="vital-value">98.6 <span class="vital-unit">°F</span></div>
+        <div class="vital-trend norm">● Normal</div>
+      </div>
+    </div>
+
+    <div class="vital-card steps">
+      <div class="vital-icon steps">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+      <div class="vital-data">
+        <div class="vital-label">Daily Steps</div>
+        <div class="vital-value">8,240</div>
+        <div class="vital-trend up">↑ Goal: 10k</div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- MAIN -->
+  <!-- ECG BANNER -->
+  <div class="ecg-banner">
+    <div class="ecg-label">ECG Live</div>
+    <div class="ecg-wrap">
+      <svg class="ecg-line" viewBox="0 0 800 40" preserveAspectRatio="none">
+        <polyline points="
+          0,20 30,20 40,20 50,5 60,35 70,20 100,20
+          130,20 140,20 150,5 160,35 170,20 200,20
+          230,20 240,20 250,5 260,35 270,20 300,20
+          330,20 340,20 350,5 360,35 370,20 400,20
+          430,20 440,20 450,5 460,35 470,20 500,20
+          530,20 540,20 550,5 560,35 570,20 600,20
+          630,20 640,20 650,5 660,35 670,20 700,20
+          730,20 740,20 750,5 760,35 770,20 800,20
+        "
+        fill="none" stroke="#5ecfcf" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ecg-status">
+      <div class="ecg-dot"></div>
+      Sinus Rhythm Normal
+    </div>
+  </div>
+
+  <!-- SPECIALITY PILLS -->
+  <div class="spec-row">
+    <div class="spec-pill active" onclick="filterSpec(this,'general')"><span>🩺</span> General</div>
+    <div class="spec-pill" onclick="filterSpec(this,'dermatologist')"><span>🔬</span> Dermatology</div>
+    <div class="spec-pill" onclick="filterSpec(this,'dentist')"><span>🦷</span> Dental</div>
+    <div class="spec-pill" onclick="filterSpec(this,'cardiologist')"><span>❤️</span> Cardiology</div>
+    <div class="spec-pill" onclick="filterSpec(this,'neurologist')"><span>🧠</span> Neurology</div>
+    <div class="spec-pill" onclick="filterSpec(this,'orthopedic')"><span>🦴</span> Orthopedic</div>
+  </div>
+
+  <!-- MAIN GRID -->
   <div class="main">
 
     <!-- FORM CARD -->
     <div class="glass-card">
-
       <form id="appointmentForm">
 
-        <!-- Patient Info -->
         <p class="section-title">Patient Information</p>
         <div class="form-grid">
           <div class="input-group">
@@ -406,7 +498,6 @@
 
         <div class="divider"></div>
 
-        <!-- Doctor Selection -->
         <p class="section-title">Doctor Selection</p>
         <div class="form-grid">
           <div class="input-group">
@@ -435,7 +526,6 @@
 
         <div class="divider"></div>
 
-        <!-- Schedule -->
         <p class="section-title">Schedule</p>
         <div class="form-grid">
           <div class="input-group">
@@ -449,72 +539,102 @@
         </div>
 
         <button class="btn-book" type="submit">✦ Confirm &amp; Book Appointment</button>
-
       </form>
     </div>
 
     <!-- SIDE PANEL -->
     <div class="glass-card side">
 
+      <!-- Doctor preview -->
       <div>
         <p class="side-title">Selected Doctor</p>
         <p class="side-sub">Updates as you choose</p>
       </div>
-
       <div class="doctor-preview" id="doctorPreview">
         <div class="doc-avatar">
           <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
-        <div class="doc-info">
-          <div class="doc-placeholder">No doctor selected yet</div>
-        </div>
+        <div class="doc-info"><div class="doc-placeholder">No doctor selected yet</div></div>
       </div>
 
       <div class="divider" style="margin:0"></div>
 
-      <p class="section-title" style="margin-bottom:10px">Quick Stats</p>
-      <div class="info-tiles">
-        <div class="info-tile">
-          <div class="tile-icon">🩺</div>
-          <div class="tile-val">6</div>
-          <div class="tile-label">Specialities</div>
-        </div>
-        <div class="info-tile">
-          <div class="tile-icon">👨‍⚕️</div>
-          <div class="tile-val">18</div>
-          <div class="tile-label">Doctors</div>
-        </div>
-        <div class="info-tile">
-          <div class="tile-icon">📍</div>
-          <div class="tile-val">Maps</div>
-          <div class="tile-label">Location Link</div>
-        </div>
-        <div class="info-tile">
-          <div class="tile-icon">📄</div>
-          <div class="tile-val">PDF</div>
-          <div class="tile-label">Receipt</div>
-        </div>
+      <!-- Health score ring -->
+      <div class="health-ring-wrap">
+        <div class="ring-title">Platform Health Score</div>
+        <svg class="ring-svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="10"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="url(#ringGrad)" stroke-width="10"
+            stroke-dasharray="220 251" stroke-dashoffset="62" stroke-linecap="round"
+            transform="rotate(-90 50 50)"/>
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#5ecfcf"/>
+              <stop offset="100%" stop-color="#7ec86e"/>
+            </linearGradient>
+          </defs>
+          <text x="50" y="54" text-anchor="middle" font-size="18" font-weight="700" fill="white" font-family="DM Sans">94</text>
+        </svg>
+        <div class="ring-val" style="display:none">94</div>
+        <div class="ring-label">↑ Excellent</div>
       </div>
 
-      <div class="tip">
-        <div class="tip-icon">💡</div>
-        <div class="tip-text">
-          <strong>Tip</strong>
-          After booking, you'll receive a PDF with your appointment details and a Google Maps link to the clinic.
+      <!-- Mini stats -->
+      <p class="section-title" style="margin-bottom:10px">Quick Stats</p>
+      <div class="mini-stats">
+        <div class="mini-stat"><div class="ms-icon">🩺</div><div class="ms-val">6</div><div class="ms-label">Specialities</div></div>
+        <div class="mini-stat"><div class="ms-icon">👨‍⚕️</div><div class="ms-val">18</div><div class="ms-label">Doctors</div></div>
+        <div class="mini-stat"><div class="ms-icon">📍</div><div class="ms-val">Maps</div><div class="ms-label">Location</div></div>
+        <div class="mini-stat"><div class="ms-icon">📄</div><div class="ms-val">PDF</div><div class="ms-label">Receipt</div></div>
+      </div>
+
+      <!-- Checklist -->
+      <div class="divider" style="margin:4px 0 12px"></div>
+      <p class="section-title" style="margin-bottom:10px">Before You Visit</p>
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">✓</div> Carry a valid photo ID</div>
+        <div class="check-item"><div class="check-icon">✓</div> Bring previous reports</div>
+        <div class="check-item"><div class="check-icon">✓</div> Arrive 10 min early</div>
+        <div class="check-item"><div class="check-icon">✓</div> List current medications</div>
+      </div>
+
+      <!-- Health tip ticker -->
+      <div class="tips-ticker">
+        <div class="ticker-label">💡 Health Tip</div>
+        <div class="ticker-track">
+          <div class="ticker-text" id="tickerText">Drink at least 8 glasses of water daily to stay hydrated and maintain energy levels.</div>
         </div>
       </div>
 
     </div>
   </div>
 
+  <!-- HEALTH TIP CARDS -->
+  <div class="tips-row">
+    <div class="tip-card">
+      <div class="tip-card-icon" style="background:rgba(255,107,107,.12)">❤️</div>
+      <div class="tip-card-title">Heart Health</div>
+      <div class="tip-card-text">30 minutes of moderate exercise daily reduces the risk of heart disease by up to 35%. Walk, swim, or cycle your way to a healthier heart.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-icon" style="background:rgba(94,207,207,.12)">🧘</div>
+      <div class="tip-card-title">Mental Wellness</div>
+      <div class="tip-card-text">Practicing mindfulness for just 10 minutes a day can significantly lower cortisol levels and improve overall mental clarity and focus.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-card-icon" style="background:rgba(126,200,110,.12)">🥗</div>
+      <div class="tip-card-title">Balanced Nutrition</div>
+      <div class="tip-card-text">A diet rich in leafy greens, whole grains, and lean proteins fuels your body and keeps your immune system strong year-round.</div>
+    </div>
+  </div>
+
   <script src="appointment.js"></script>
   <script>
-    // Live doctor preview update
-    const doctorSelect = document.getElementById('doctor');
-    const preview = document.getElementById('doctorPreview');
-
-    doctorSelect.addEventListener('change', () => {
-      const val = doctorSelect.value;
+    // Live doctor preview
+    const doctorSel = document.getElementById('doctor');
+    const preview   = document.getElementById('doctorPreview');
+    doctorSel.addEventListener('change', () => {
+      const val = doctorSel.value;
       if (!val) {
         preview.classList.remove('active');
         preview.querySelector('.doc-info').innerHTML = '<div class="doc-placeholder">No doctor selected yet</div>';
@@ -522,14 +642,40 @@
       }
       const doc = JSON.parse(val);
       preview.classList.add('active');
-      preview.querySelector('.doc-info').innerHTML = `
-        <div class="doc-name">${doc.name}</div>
-        <div class="doc-venue">📍 ${doc.venue}</div>
-      `;
+      preview.querySelector('.doc-info').innerHTML =
+        `<div class="doc-name">${doc.name}</div><div class="doc-venue">📍 ${doc.venue}</div>`;
     });
 
-    // Set min date to today
+    // Min date = today
     document.getElementById('appointmentDate').min = new Date().toISOString().split('T')[0];
+
+    // Speciality pill → sync doctorCategory select
+    function filterSpec(el, val) {
+      document.querySelectorAll('.spec-pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      const cat = document.getElementById('doctorCategory');
+      cat.value = val;
+      cat.dispatchEvent(new Event('change'));
+    }
+
+    // Health tips ticker
+    const tips = [
+      "Drink at least 8 glasses of water daily to stay hydrated and maintain energy levels.",
+      "Sleep 7–9 hours per night to let your body repair and your brain consolidate memories.",
+      "Wash your hands for at least 20 seconds to prevent the spread of infections.",
+      "Schedule regular health check-ups — prevention is better than cure.",
+      "Limit screen time before bed to improve sleep quality and reduce eye strain.",
+      "Take a 5-minute walk every hour if you sit for long periods at work."
+    ];
+    let tipIdx = 0;
+    const tickerEl = document.getElementById('tickerText');
+    setInterval(() => {
+      tickerEl.style.animation = 'none';
+      tickerEl.offsetHeight; // reflow
+      tipIdx = (tipIdx + 1) % tips.length;
+      tickerEl.textContent = tips[tipIdx];
+      tickerEl.style.animation = 'tickerFade 5s ease-in-out infinite';
+    }, 5000);
   </script>
 
 </body>
