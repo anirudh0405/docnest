@@ -208,6 +208,7 @@
       color:var(--teal); text-transform:uppercase; margin-bottom:14px;
     }
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+    .form-3col { grid-template-columns:1fr 1fr 1fr; }
     .input-group { display:flex; flex-direction:column; gap:6px; }
     .input-group label { font-size:.75rem; color:var(--muted); font-weight:500; padding-left:4px; }
     .input-group input, .input-group select {
@@ -481,7 +482,7 @@
       <form id="appointmentForm">
 
         <p class="section-title">Patient Information</p>
-        <div class="form-grid">
+        <div class="form-grid form-3col">
           <div class="input-group">
             <label>Full Name</label>
             <input id="patientName" type="text" placeholder="Your full name"/>
@@ -498,8 +499,8 @@
 
         <div class="divider"></div>
 
-        <p class="section-title">Doctor Selection</p>
-        <div class="form-grid">
+        <p class="section-title">Doctor &amp; Schedule</p>
+        <div class="form-grid form-3col">
           <div class="input-group">
             <label>Speciality</label>
             <div class="select-wrap">
@@ -522,12 +523,6 @@
               </select>
             </div>
           </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <p class="section-title">Schedule</p>
-        <div class="form-grid">
           <div class="input-group">
             <label>Appointment Date</label>
             <input id="appointmentDate" type="date"/>
@@ -540,6 +535,49 @@
 
         <button class="btn-book" type="submit">✦ Confirm &amp; Book Appointment</button>
       </form>
+
+      <div class="divider" style="margin-top:24px;"></div>
+
+      <!-- Bottom 3-col: 2 tip cards + Before You Visit -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:4px;">
+        <div style="background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.15);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,107,107,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">❤️</div>
+            <span style="font-size:.85rem;font-weight:600;color:var(--white);">Heart Health</span>
+          </div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.6;">30 min of exercise daily reduces heart disease risk by up to 35%. Walk, swim, or cycle your way to better health.</div>
+          <div style="font-size:.72rem;color:#ff6b6b;font-weight:500;">↑ Cardio recommended</div>
+        </div>
+        <div style="background:rgba(94,207,207,.07);border:1px solid rgba(94,207,207,.15);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(94,207,207,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🧘</div>
+            <span style="font-size:.85rem;font-weight:600;color:var(--white);">Mental Wellness</span>
+          </div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.6;">10 minutes of mindfulness daily lowers cortisol and improves mental clarity and focus significantly.</div>
+          <div style="font-size:.72rem;color:var(--teal);font-weight:500;">↑ Daily mindfulness helps</div>
+        </div>
+        <div style="background:rgba(126,200,110,.07);border:1px solid rgba(126,200,110,.15);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:.68rem;font-weight:600;letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin-bottom:2px;">Before You Visit</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(94,207,207,.12);border:1px solid rgba(94,207,207,.25);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;">✓</div>
+              Carry a valid photo ID
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(94,207,207,.12);border:1px solid rgba(94,207,207,.25);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;">✓</div>
+              Bring previous reports
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(94,207,207,.12);border:1px solid rgba(94,207,207,.25);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;">✓</div>
+              Arrive 10 min early
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(94,207,207,.12);border:1px solid rgba(94,207,207,.25);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;">✓</div>
+              List current medications
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- SIDE PANEL -->
@@ -588,15 +626,7 @@
         <div class="mini-stat"><div class="ms-icon">📄</div><div class="ms-val">PDF</div><div class="ms-label">Receipt</div></div>
       </div>
 
-      <!-- Checklist -->
-      <div class="divider" style="margin:4px 0 12px"></div>
-      <p class="section-title" style="margin-bottom:10px">Before You Visit</p>
-      <div class="checklist">
-        <div class="check-item"><div class="check-icon">✓</div> Carry a valid photo ID</div>
-        <div class="check-item"><div class="check-icon">✓</div> Bring previous reports</div>
-        <div class="check-item"><div class="check-icon">✓</div> Arrive 10 min early</div>
-        <div class="check-item"><div class="check-icon">✓</div> List current medications</div>
-      </div>
+
 
       <!-- Health tip ticker -->
       <div class="tips-ticker">
@@ -606,27 +636,12 @@
         </div>
       </div>
 
+
+
     </div>
   </div>
 
-  <!-- HEALTH TIP CARDS -->
-  <div class="tips-row">
-    <div class="tip-card">
-      <div class="tip-card-icon" style="background:rgba(255,107,107,.12)">❤️</div>
-      <div class="tip-card-title">Heart Health</div>
-      <div class="tip-card-text">30 minutes of moderate exercise daily reduces the risk of heart disease by up to 35%. Walk, swim, or cycle your way to a healthier heart.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-card-icon" style="background:rgba(94,207,207,.12)">🧘</div>
-      <div class="tip-card-title">Mental Wellness</div>
-      <div class="tip-card-text">Practicing mindfulness for just 10 minutes a day can significantly lower cortisol levels and improve overall mental clarity and focus.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-card-icon" style="background:rgba(126,200,110,.12)">🥗</div>
-      <div class="tip-card-title">Balanced Nutrition</div>
-      <div class="tip-card-text">A diet rich in leafy greens, whole grains, and lean proteins fuels your body and keeps your immune system strong year-round.</div>
-    </div>
-  </div>
+
 
   <script src="appointment.js"></script>
   <script>
