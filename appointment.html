@@ -341,14 +341,20 @@
     .tip-card-title { font-size:.85rem; font-weight:600; color:var(--white); }
     .tip-card-text  { font-size:.78rem; color:var(--muted); line-height:1.6; }
 
+    .bottom-tips { grid-template-columns: 1fr 1fr 1fr; }
     /* responsive */
     @media(max-width:760px){
-      .main{grid-template-columns:1fr}
-      .glass-card.side{order:-1}
-      .form-grid{grid-template-columns:1fr}
-      .tips-row{grid-template-columns:1fr}
-      nav{flex-direction:column;gap:14px}
-      .vitals-strip{gap:10px}
+      body { padding: 16px 12px 40px; }
+      .main { grid-template-columns: 1fr; gap: 16px; }
+      .glass-card { padding: 20px; }
+      .glass-card.side { order: -1; }
+      .form-grid, .form-3col, .bottom-tips { grid-template-columns: 1fr !important; }
+      .tips-row { grid-template-columns: 1fr; }
+      nav { flex-direction: column; gap: 14px; margin-bottom: 20px; }
+      .nav-links { flex-wrap: wrap; justify-content: center; }
+      .vitals-strip { gap: 10px; margin-bottom: 20px; }
+      .ecg-banner { flex-wrap: wrap; justify-content: center; }
+      .ecg-wrap { min-width: 100px; }
     }
   </style>
 </head>
@@ -529,7 +535,38 @@
           </div>
           <div class="input-group">
             <label>Preferred Time</label>
-            <input id="appointmentTime" type="time"/>
+            <div class="select-wrap">
+              <select id="appointmentTime">
+                <option value="">Select Time</option>
+                <option value="09:00 AM">09:00 AM</option>
+                <option value="09:30 AM">09:30 AM</option>
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="10:30 AM">10:30 AM</option>
+                <option value="11:00 AM">11:00 AM</option>
+                <option value="11:30 AM">11:30 AM</option>
+                <option value="12:00 PM">12:00 PM</option>
+                <option value="12:30 PM">12:30 PM</option>
+                <option value="01:00 PM">01:00 PM</option>
+                <option value="01:30 PM">01:30 PM</option>
+                <option value="02:00 PM">02:00 PM</option>
+                <option value="02:30 PM">02:30 PM</option>
+                <option value="03:00 PM">03:00 PM</option>
+                <option value="03:30 PM">03:30 PM</option>
+                <option value="04:00 PM">04:00 PM</option>
+                <option value="04:30 PM">04:30 PM</option>
+                <option value="05:00 PM">05:00 PM</option>
+                <option value="05:30 PM">05:30 PM</option>
+                <option value="06:00 PM">06:00 PM</option>
+                <option value="06:30 PM">06:30 PM</option>
+                <option value="07:00 PM">07:00 PM</option>
+                <option value="07:30 PM">07:30 PM</option>
+                <option value="08:00 PM">08:00 PM</option>
+                <option value="08:30 PM">08:30 PM</option>
+                <option value="09:00 PM">09:00 PM</option>
+                <option value="09:30 PM">09:30 PM</option>
+                <option value="10:00 PM">10:00 PM</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -539,7 +576,7 @@
       <div class="divider" style="margin-top:24px;"></div>
 
       <!-- Bottom 3-col: 2 tip cards + Before You Visit -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:4px;">
+      <div class="bottom-tips" style="display:grid;gap:14px;margin-top:4px;">
         <div style="background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.15);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;align-items:center;gap:10px;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,107,107,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">❤️</div>
